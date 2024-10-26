@@ -1,46 +1,33 @@
-import React, { useState } from 'react';
+import React from 'react';
+import Logo from "../images/logo.png"
+import TopBar from "../components/TopBar";
+import LogFilter from "../components/LogFilter";
+
+const pageStyles = {
+  padding: "20px 200px",
+  fontFamily: "-apple-system, Roboto, sans-serif, serif",
+};
 
 const SqliteDataPage = ({ pageContext }) => {
     const { sqliteData } = pageContext;
 
-    const [searchTerm, setSearchTerm] = useState('');
-
-    const filteredData = sqliteData.filter(item =>
-        item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.age.toString().includes(searchTerm)
-    );
+    console.log(sqliteData);
 
     return (
-        <div>
-            <h1>SQLite Data</h1>
-
-            <input
-                type="text"
-                placeholder="Search by name or age..."
-                value={ searchTerm }
-                onChange={ (e) => setSearchTerm(e.target.value) }
-                style={ {
-                    padding: '10px',
-                    marginBottom: '20px',
-                    width: '100%',
-                    maxWidth: '400px',
-                    fontSize: '16px'
-                } }
-            />
-
-            <ul>
-                { filteredData.length > 0 ? (
-                    filteredData.map(item => (
-                        <li key={ item.id }>
-                            <strong>Name:</strong> { item.name }, <strong>Age:</strong> { item.age }
-                        </li>
-                    ))
-                ) : (
-                    <li>No results found.</li>
-                ) }
-            </ul>
-        </div>
+        <>
+          <TopBar/>
+          <main style={pageStyles}>
+            <LogFilter data={sqliteData}/>
+          </main>
+        </>
     );
 };
 
 export default SqliteDataPage;
+
+export const Head = () => (
+    <>
+      <title>Utec Logger UI</title>
+      <link rel="icon" type="image/png" href={Logo} />
+    </>
+);

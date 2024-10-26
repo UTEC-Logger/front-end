@@ -1,50 +1,75 @@
-import React from "react";
+import React, { useState } from "react";
 
-const filterContainerStyles = {
-  display: "flex",
-  justifyContent: "space-between",
-  alignItems: "center",
-  padding: "10px 20px",
-  backgroundColor: "#f5f5f5",
-  borderRadius: "4px",
-  marginTop: "20px",
-};
+const LogFilter = ({ data }) => {
+  
+  const [searchTerm, setSearchTerm] = useState("");
+  const [logType, setLogType] = useState("");
+  const [date, setDate] = useState("");
+  const [originFile, setOriginFile] = useState("");
 
-const searchInputStyles = {
-  padding: "8px",
-  fontSize: "16px",
-  borderRadius: "4px",
-  border: "1px solid #ddd",
-  flex: 1,
-  marginRight: "20px",
-};
+  // Aplicar todos los filtros
+  const filteredData = data ? data.filter(item => {
+    return (
+      (searchTerm === "" || (item.message && item.message.toLowerCase().includes(searchTerm.toLowerCase()))) &&
+      (logType === "" || item.type === logType) &&
+      (date === "" || item.date === date) &&
+      (originFile === "" || (item.file && item.file.includes(originFile)))
+    );
+}) : [];
 
-const selectStyles = {
-  padding: "8px",
-  fontSize: "16px",
-  borderRadius: "4px",
-  border: "1px solid #ddd",
-};
-
-const LogFilter = () => {
   return (
-    <div style={filterContainerStyles}>
-        
-      {/* Buscador */}
+    <div style={{ marginBottom: "20px" }}>
+      {/* Filtro de búsqueda general */}
       <input
         type="text"
-        placeholder="Search logs..."
-        style={searchInputStyles}
+        placeholder="Search by content..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        style={{ padding: "10px", marginRight: "10px" }}
       />
-      
+
       {/* Filtro de tipo de log */}
-      <select style={selectStyles}>
+      <select
+        value={logType}
+        onChange={(e) => setLogType(e.target.value)}
+        style={{ padding: "10px", marginRight: "10px" }}
+      >
         <option value="">All Types</option>
         <option value="INFO">INFO</option>
         <option value="WARN">WARN</option>
         <option value="ERROR">ERROR</option>
         <option value="CRITICAL">CRITICAL</option>
       </select>
+
+      {/* Filtro de fecha */}
+      <input
+        type="date"
+        value={date}
+        onChange={(e) => setDate(e.target.value)}
+        style={{ padding: "10px", marginRight: "10px" }}
+      />
+
+      {/* Filtro de archivo de origen */}
+      <input
+        type="text"
+        placeholder="Filter by origin file"
+        value={originFile}
+        onChange={(e) => setOriginFile(e.target.value)}
+        style={{ padding: "10px" }}
+      />
+
+      {/* Resultados filtrados */}
+      <ul style={{ marginTop: "20px" }}>
+        {filteredData.length > 0 ? (
+          filteredData.map((item) => (
+            <li key={item.id}>
+              <strong>Name:</strong> {item.name}, <strong>Age:</strong> {item.age}
+            </li>
+          ))
+        ) : (
+          <li>No results found.</li>
+        )}
+      </ul>
     </div>
   );
 };
