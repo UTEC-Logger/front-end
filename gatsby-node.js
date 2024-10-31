@@ -1,36 +1,35 @@
-const sqlite3 = require('sqlite3').verbose();
+const fs = require('fs');
 const path = require('path');
 
 exports.createPages = async ({ actions }) => {
     const { createPage } = actions;
 
-    // Connect to the SQLite database
-    const db = new sqlite3.Database('./database.sqlite');
+    // Ruta de la carpeta de logs en `public/logs`
+    const logsDir = path.resolve(__dirname, 'public/logs');
 
-    // Function to get data from the SQLite database
-    const getData = () => {
-        return new Promise((resolve, reject) => {
-            db.all('SELECT * FROM your_table', (err, rows) => {
-                if (err) {
-                    reject(err);
-                }
-                resolve(rows);
-            });
-        });
-    };
+    // Leer todos los archivos `.log` en la carpeta de logs
+    const logFiles = fs.readdirSync(logsDir).filter(file => file.endsWith('.log'));
 
-    // Fetch data
-    const data = await getData();
+    // Leer el contenido de cada archivo y parsearlo como JSON
+    let allLogs = [];
+    logFiles.forEach(file => {
+        const filePath = path.join(logsDir, file);
+        const content = fs.readFileSync(filePath, 'utf8');
+        
+        const logs = content
+            .split('\n')
+            .map(line => (line ? JSON.parse(line) : null)) // Parsear cada línea como JSON
+            .filter(Boolean); // Filtrar líneas vacías o inválidas
 
-    // Close the database
-    db.close();
+        allLogs = allLogs.concat(logs);
+    });
 
-    // Create a page and pass the data to the context
+    // Crear una página y pasar los logs al contexto
     createPage({
         path: '/sqlite-data',
         component: path.resolve('./src/templates/sqliteTemplate.js'),
         context: {
-            sqliteData: data,
+            sqliteData: allLogs, // Cambiado para pasar los logs en lugar de datos de SQLite
         },
     });
 };

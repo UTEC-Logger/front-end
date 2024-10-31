@@ -10,19 +10,19 @@ const LogFilter = ({ data }) => {
   // Aplicar todos los filtros
   const filteredData = data ? data.filter(item => {
     return (
-      (searchTerm === "" || (item.message && item.message.toLowerCase().includes(searchTerm.toLowerCase()))) &&
-      (logType === "" || item.type === logType) &&
-      (date === "" || item.date === date) &&
-      (originFile === "" || (item.file && item.file.includes(originFile)))
+      (searchTerm === "" || item.message.toLowerCase().includes(searchTerm.toLowerCase())) &&
+      (logType === "" || item.log_type === logType) &&
+      (date === "" || item.time.startsWith(date)) &&
+      (originFile === "" || item.file_name.includes(originFile))
     );
-}) : [];
+  }) : [];
 
   return (
     <div style={{ marginBottom: "20px" }}>
       {/* Filtro de búsqueda general */}
       <input
         type="text"
-        placeholder="Search by content..."
+        placeholder="Search by message..."
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
         style={{ padding: "10px", marginRight: "10px" }}
@@ -61,9 +61,9 @@ const LogFilter = ({ data }) => {
       {/* Resultados filtrados */}
       <ul style={{ marginTop: "20px" }}>
         {filteredData.length > 0 ? (
-          filteredData.map((item) => (
-            <li key={item.id}>
-              <strong>Name:</strong> {item.name}, <strong>Age:</strong> {item.age}
+          filteredData.map((item, index) => (
+            <li key={index}>
+              <strong>Time:</strong> {item.time} | <strong>Type:</strong> {item.log_type} | <strong>File:</strong> {item.file_name}:{item.log_line} | <strong>Message:</strong> {item.message}
             </li>
           ))
         ) : (
