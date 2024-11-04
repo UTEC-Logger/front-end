@@ -3,7 +3,7 @@ import { navigate } from "gatsby";
 
 const IndexPage = () => {
     useEffect(() => {
-        navigate("/sqlite-data", { replace: true });
+        navigate("/page", { replace: true });
     }, []);
 
     return null;
