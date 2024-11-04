@@ -29,8 +29,8 @@ exports.createPages = async ({ actions }) => {
 
     // Crear una página y pasar los logs al contexto
     createPage({
-        path: '/page',
-        component: path.resolve('./src/templates/sqliteTemplate.js'),
+        path: '/logger',
+        component: path.resolve('./src/templates/logger.js'),
         context: {
             logsData: allLogs,
         },

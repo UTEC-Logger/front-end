@@ -3,7 +3,7 @@ import { navigate } from "gatsby";
 
 const IndexPage = () => {
     useEffect(() => {
-        navigate("/page", { replace: true });
+        navigate("/logger", { replace: true });
     }, []);
 
     return null;
