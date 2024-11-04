@@ -37,8 +37,6 @@ const LogFilter = ({ data }) => {
 
   return (
     <div style={{ padding: "20px", backgroundColor: "#F8F9FA", borderRadius: "8px", boxShadow: "0 2px 8px rgba(0,0,0,0.1)" }}>
-      <h2 style={{ marginBottom: "20px", color: "#343A40" }}>Log Filter</h2>
-      
       <div style={{ display: "flex", flexWrap: "wrap", gap: "10px", marginBottom: "20px" }}>
         {/* Filtro de búsqueda general */}
         <input
@@ -120,12 +118,18 @@ const LogFilter = ({ data }) => {
                 boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
               }}
             >
-              <strong style={{ color: getLogColor(item.log_type) }}>
-                {item.log_type}:
-              </strong>{" "}
-              <strong>Time:</strong> {item.time} | <strong>File:</strong>{" "}
-              {item.file_name}:{item.log_line} | <strong>Message:</strong>{" "}
-              {item.message}
+              <div style={{ color: getLogColor(item.log_type), fontWeight: "bold" }}>
+                {item.log_type}
+              </div>
+              <div>
+                <strong>Time:</strong> {item.time}
+              </div>
+              <div>
+                <strong>File:</strong> {item.file_name}:{item.log_line}
+              </div>
+              <div>
+                <strong>Message:</strong> {item.message}
+              </div>
             </li>
           ))
         ) : (
