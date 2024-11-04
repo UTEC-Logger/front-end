@@ -1,13 +1,14 @@
 const fs = require('fs');
 const path = require('path');
 
+const logsDir = path.resolve(__dirname, 'logs');
+
 exports.createPages = async ({ actions }) => {
+    
     const { createPage } = actions;
 
-    const logsDir = path.resolve(__dirname, 'logs');
-
     if (!fs.existsSync(logsDir)) {
-        console.error("La carpeta de logs no existe en 'logs'");
+        console.error(`La carpeta de logs no existe en '${logsDir}'`);
         return;
     }
 
