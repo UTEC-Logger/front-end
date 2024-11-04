@@ -13,7 +13,7 @@ exports.createPages = async ({ actions }) => {
 
     const logFiles = fs.readdirSync(logsDir).filter(file => file.endsWith('.log'));
 
-    // Leer el contenido de cada archivo y parsearlo como JSON
+    // Leer el contenido de cada archivo y parsearlo según el formato de los logs
     let allLogs = [];
     logFiles.forEach(file => {
         const filePath = path.join(logsDir, file);
@@ -21,7 +21,23 @@ exports.createPages = async ({ actions }) => {
 
         const logs = content
             .split('\n')
-            .map(line => (line ? JSON.parse(line) : null))
+            .map(line => {
+                if (!line.trim()) return null;
+
+                const parts = line.split(' | ');
+                if (parts.length < 4) return null;
+
+                const [time, logType, fileInfo, message] = parts;
+                const [fileName, lineNumber] = fileInfo.split(':');
+
+                return {
+                    time: time.trim(),
+                    log_type: logType.trim(),
+                    file_name: fileName.trim(),
+                    log_line: parseInt(lineNumber.trim(), 10),
+                    message: message.trim(),
+                };
+            })
             .filter(Boolean);
 
         allLogs = allLogs.concat(logs);
