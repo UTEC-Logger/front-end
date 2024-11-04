@@ -6,7 +6,7 @@ import LogFilter from "../components/LogFilter";
 const pageStyles = {
   padding: "20px",
   fontFamily: "-apple-system, Roboto, sans-serif, serif",
-  maxWidth: "800px",
+  maxWidth: "1300px",
   margin: "0 auto",
 };
 
