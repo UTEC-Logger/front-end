@@ -3,53 +3,72 @@ const path = require('path');
 
 const logsDir = path.resolve(__dirname, 'logs');
 
-exports.createPages = async ({ actions }) => {
-    
-    const { createPage } = actions;
+exports.createPages = async ({actions}) => {
 
-    if (!fs.existsSync(logsDir)) {
-        console.error(`La carpeta de logs no existe en '${logsDir}'`);
-        return;
-    }
+	const {createPage} = actions;
 
-    const logFiles = fs.readdirSync(logsDir).filter(file => file.endsWith('.log'));
+	if (!fs.existsSync(logsDir)) {
+		console.error(`La carpeta de logs no existe en '${logsDir}'`);
+		return;
+	}
 
-    // Leer el contenido de cada archivo y parsearlo según el formato de los logs
-    let allLogs = [];
-    logFiles.forEach(file => {
-        const filePath = path.join(logsDir, file);
-        const content = fs.readFileSync(filePath, 'utf8');
+	const logFiles = fs.readdirSync(logsDir).filter(file => file.endsWith('.log'));
 
-        const logs = content
-            .split('\n')
-            .map(line => {
-                if (!line.trim()) return null;
+	// Leer el contenido de cada archivo y parsearlo según el formato de los logs
+	let allLogs = [];
+	logFiles.forEach(file => {
+		const filePath = path.join(logsDir, file);
+		const content = fs.readFileSync(filePath, 'utf8');
 
-                const parts = line.split(' | ');
-                if (parts.length < 4) return null;
+		const logs = content
+			.split('\n')
+			.map(line => {
+				if (!line.trim()) return null;
 
-                const [time, logType, fileInfo, message] = parts;
-                const [fileName, lineNumber] = fileInfo.split(':');
+				const parts = line.split(' | ');
+				if (parts.length < 4) return null;
 
-                return {
-                    time: time.trim(),
-                    log_type: logType.trim(),
-                    file_name: fileName.trim(),
-                    log_line: parseInt(lineNumber.trim(), 10),
-                    message: message.trim(),
-                };
-            })
-            .filter(Boolean);
+				const [time, logType, instance, fileInfo, message] = parts;
+				const [fileName, lineNumber] = fileInfo.split(':');
 
-        allLogs = allLogs.concat(logs);
-    });
+				return {
+					time: time.trim(),
+					log_type: logType.trim(),
+					file_name: fileName.trim(),
+					log_line: parseInt(lineNumber.trim(), 10),
+					message: message.trim(),
+				};
+			})
+			.filter(Boolean);
 
-    // Crear una página y pasar los logs al contexto
-    createPage({
-        path: '/logger',
-        component: path.resolve('./src/templates/logger.js'),
-        context: {
-            logsData: allLogs,
-        },
-    });
+		allLogs = allLogs.concat(logs);
+	});
+
+	// Crear una página y pasar los logs al contexto
+	createPage({
+		path: '/',
+		component: path.resolve('./src/templates/logger.js'),
+		context: {
+			logsData: allLogs,
+		},
+	});
+
+	const logsByFile = allLogs.reduce((acc, entry) => {
+		const {file_name} = entry;
+		if (!acc[file_name]) {
+			acc[file_name] = [];
+		}
+		acc[file_name].push(entry);
+		return acc;
+	}, {});
+
+	for (const file in logsByFile) {
+		createPage({
+			path: `/${file.replace('.', '-')}`, // Convert file names to paths
+			component: path.resolve('./src/templates/logger.js'),
+			context: {
+				logsData: logsByFile[file], // Pass log data for this file to the template
+			},
+		});
+	}
 };
