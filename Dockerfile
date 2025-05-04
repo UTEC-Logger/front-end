@@ -1,17 +1,11 @@
-FROM node:20-alpine
+FROM node:18-alpine
 
 WORKDIR /app
 
-COPY package*.json ./
-
-RUN npm install --production
-
 COPY . .
 
-RUN npm run build
+RUN npm install -g gatsby-cli && npm install
 
-EXPOSE 9000
+EXPOSE 3000
 
-ENV LOGGER_PATH=/logs
-
-CMD ["npx", "gatsby", "serve", "--port", "9000", "--host", "0.0.0.0"]
+CMD ["sh", "-c", "gatsby build && npx serve -s public -l 3000"]

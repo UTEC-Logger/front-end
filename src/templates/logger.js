@@ -1,35 +1,34 @@
-import React from 'react';
-import Logo from "../images/logo.png";
-import TopBar from "../components/TopBar";
-import LogFilter from "../components/LogFilter";
+"use client"
 
-const pageStyles = {
-  padding: "20px",
-  fontFamily: "-apple-system, Roboto, sans-serif, serif",
-  maxWidth: "950px",
-  margin: "0 auto",
-};
+import React from "react";
+import TopBar from "../components/TopBar"
+import LogFilter from "../components/LogFilter"
 
-const SqliteDataPage = ({ pageContext }) => {
-    const { logsData } = pageContext; // Cambiado para usar logsData en lugar de sqliteData
+const Logger = ({pageContext}) => {
+	const {logsData} = pageContext
 
-    console.log(logsData); // Verifica que los datos estén disponibles
+	return (
+		<div className="min-h-screen bg-gray-50 flex flex-col">
+			<TopBar/>
 
-    return (
-        <>
-          <TopBar />
-          <main style={pageStyles}>
-            <LogFilter data={logsData} /> {/* Pasa logsData a LogFilter */}
-          </main>
-        </>
-    );
-};
+			<main className="flex-1 container mx-auto px-4 py-6 md:px-6 md:py-8 max-w-6xl">
+				<LogFilter data={logsData}/>
+			</main>
 
-export default SqliteDataPage;
+			<footer className="bg-white border-t border-gray-200 py-4 mt-auto">
+				<div className="container mx-auto px-4 text-center text-sm text-gray-500">
+					UTEC Logger &copy; {new Date().getFullYear()} - Developed by Maykol, Gino & Ian
+				</div>
+			</footer>
+		</div>
+	)
+}
+
+export default Logger
 
 export const Head = () => (
-    <>
-      <title>Utec Logger UI</title>
-      <link rel="icon" type="image/png" href={Logo} />
-    </>
-);
+	<>
+		<title>UTEC Logger</title>
+		<meta name="description" content="View and filter application logs with UTEC Logger"/>
+	</>
+)
